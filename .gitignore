@@ -1,5 +1,6 @@
 ### specific to our project
 os
+*.exe
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/rust,vim
