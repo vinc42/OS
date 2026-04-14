@@ -8,6 +8,9 @@ const UART: *mut u8 = 0x0900_0000 as *mut u8;
 #[unsafe(no_mangle)]
 pub extern "C" fn kmain() {
     print(b"Hello, from Rust!\n");
+    loop {
+        putchar(getchar());
+    }
 }
 
 fn putchar(c: u8) {
@@ -19,6 +22,13 @@ fn putchar(c: u8) {
 fn print(s: &[u8]) {
     for &c in s {
         putchar(c);
+    }
+}
+
+fn getchar() -> u8   {
+    unsafe {
+        let value: u8 = *UART;
+        return value;
     }
 }
 
