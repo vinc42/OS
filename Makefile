@@ -12,7 +12,7 @@ SRC_DIR := src
 ASM_DIR := $(SRC_DIR)/asm
 LNK_DIR := $(SRC_DIR)/lnk
 BOOT_ASM := $(ASM_DIR)/boot.s
-KERNEL_RS := $(SRC_DIR)/lib.rs
+KERNEL_RS := $(SRC_DIR)/rs/*.rs
 LINKER_SCRIPT := $(LNK_DIR)/linker.ld
 
 # Output filenames
