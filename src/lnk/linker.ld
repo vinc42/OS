@@ -4,7 +4,9 @@ SECTIONS {
     .text.init : {
         boot.o(.text)
     }
+    . = 0x40200000;
     .text : {
+        programs.o(.text)
         *(.text)
     }
     .data : {

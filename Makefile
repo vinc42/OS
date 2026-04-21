@@ -1,7 +1,7 @@
 # Target architecture and toolchain
 TARGET := aarch64-unknown-none
 AS := aarch64-linux-gnu-as
-CC := aarch64-linux-gnu-gcc-14
+CC := aarch64-linux-gnu-gcc
 CFLAGS := -Wall -ggdb -ffreestanding -nostdlib -I./include
 LD := ld.lld
 QEMU := qemu-system-aarch64
@@ -12,13 +12,15 @@ SRC_DIR := src
 ASM_DIR := $(SRC_DIR)/asm
 LNK_DIR := $(SRC_DIR)/lnk
 BOOT_ASM := $(ASM_DIR)/boot.s
-KERNEL_RS := $(SRC_DIR)/rs/*.rs
+KERNEL_RS := $(SRC_DIR)/kernel/*.rs
+PROGRAMS_C := $(SRC_DIR)/programs/*.c
 LINKER_SCRIPT := $(LNK_DIR)/linker.ld
 
 # Output filenames
 BOOT_OBJ := $(ASM_DIR)/boot.o
 CRATE_NAME := $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].name')
 KERNEL_OBJ := target/$(TARGET)/$(VERSION)/lib$(CRATE_NAME).a
+PROGRAMS_OBJ := target/programs.o
 KERNEL_ELF := kernel.elf
 
 # QEMU options
@@ -35,9 +37,13 @@ $(BOOT_OBJ): $(BOOT_ASM)
 $(KERNEL_OBJ): $(KERNEL_RS)
 	cargo build --target $(TARGET)
 
+# Compile the C programs
+$(PROGRAMS_OBJ): $(PROGRAMS_C)
+	$(CC) -c $(PROGRAMS_C) -o $(PROGRAMS_OBJ)
+
 # Link the kernel object and boot object into an ELF
-$(KERNEL_ELF): $(BOOT_OBJ) $(KERNEL_OBJ) $(LINKER_SCRIPT)
-	$(LD) -flavor gnu -o $(KERNEL_ELF) -T $(LINKER_SCRIPT) -o $@ $(BOOT_OBJ) $(KERNEL_OBJ)
+$(KERNEL_ELF): $(BOOT_OBJ) $(KERNEL_OBJ) $(LINKER_SCRIPT) $(PROGRAMS_OBJ)
+	$(LD) -flavor gnu -o $(KERNEL_ELF) -T $(LINKER_SCRIPT) -o $@ $(BOOT_OBJ) $(KERNEL_OBJ) $(PROGRAMS_OBJ)
 
 # Run the kernel with QEMU
 run: $(KERNEL_ELF)

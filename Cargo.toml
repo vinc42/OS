@@ -15,4 +15,4 @@ debug = false
 
 [lib]
 crate-type = ["staticlib"] # Build this crate as a static library
-path = "src/rs/lib.rs"
+path = "src/kernel/lib.rs"

@@ -10,11 +10,11 @@ pkgs.mkShell {
     pkgs.rustup
   ];
 
-  CC = "aarch64-unknown-linux-gnu-gcc-14";
+  CC = "aarch64-unknown-linux-gnu-gcc";
   AS = "aarch64-unknown-linux-gnu-as";
 
   shellHook = ''
     rustup target add aarch64-unknown-none
-    alias make="make CC=aarch64-unknown-linux-gnu-gcc-14 AS=aarch64-unknown-linux-gnu-as"
+    alias make="make CC=aarch64-unknown-linux-gnu-gcc AS=aarch64-unknown-linux-gnu-as"
   '';
 }
